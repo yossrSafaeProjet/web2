@@ -1,0 +1,18 @@
+.title {
+    color: #ff5733;
+    text-align: center;
+    margin-bottom: rem;
+  }
+  .container-background {
+    background-color:black; 
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  .titleModal{
+    color: blue;
+  }
+  .mt-4 {
+    margin-top: 10rem!important;
+  }
+  
