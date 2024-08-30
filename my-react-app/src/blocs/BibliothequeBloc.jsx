@@ -138,7 +138,7 @@ const BibliothequeBloc = () => {
       >
         Ajouter un Raccourci
       </Button>
-      <ExportEtImportBlocs blocks={blocks} setBlocks={setBlocks} />
+      <ExportEtImportBlocs blocks={blocks} setBlocks={setBlocks}/>
 
       <div className={styles.cardContainer}>
         {blocks.map((block) => (
