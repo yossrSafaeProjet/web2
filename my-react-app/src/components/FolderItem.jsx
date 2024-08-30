@@ -13,6 +13,10 @@ const FolderHeader = styled.div`
   align-items: center;
   font-weight: bold;
   cursor: pointer;
+
+  span {
+    color: #ffffff; /* Texte en blanc */
+  }
 `;
 
 const IconButton = styled.div`
@@ -23,6 +27,7 @@ const IconButton = styled.div`
     color: #0056b3;
   }
 `;
+
 
 const FolderItem = ({ item, addFolder, addFile, selectFile, renameItem, deleteItem, onDragStart, onDragOver, onDrop }) => {
   const handleDragStart = (e) => {

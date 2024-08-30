@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MarkdownEditor from './MarkdownEditor';
-import MarkdownPreview from './MarkdownPreview';
+//import MarkdownPreview from './MarkdownPreview';
 import '../App.css';
-import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFileExport } from 'react-icons/fa';
+import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFile, FaFileImport } from 'react-icons/fa';
 
 const FileTree = () => {
   const [structure, setStructure] = useState([]);
@@ -140,18 +140,32 @@ const FileTree = () => {
       setTimeout(() => moveItem(), 0);
     }
   };
-
-  const importFile = (event) => {
-    const file = event.target.files[0]; // Sélectionne le premier fichier
+  
+  const importFile = (event, parentId) => {
+    const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
             const fileContent = e.target.result;
-            //onContentChange(fileContent);  Met à jour le contenu de l'éditeur avec le contenu du fichier
+            console.log("parentId",parentId);
+            // Créer un nouvel objet fichier avec l'ID du dossier parent (parentId)
+            const newFile = {
+                id: Date.now(),  // Génère un ID unique basé sur l'horodatage actuel
+                name: file.name, // Nom du fichier importé
+                type: 'file',    // Le type est défini sur 'file'
+                content: fileContent, // Contenu du fichier lu
+                parentId: parentId,  // Dossier parent où le fichier sera ajouté
+            };
+
+            // Mettre à jour la structure avec le nouveau fichier
+            const updatedStructure = [...structure, newFile];
+            saveToLocalStorage(updatedStructure); // Sauvegarde dans le stockage local
+            selectFile(newFile); // Sélectionner le fichier pour l'éditer après importation
         };
-        reader.readAsText(file); // Lire le fichier comme du texte
+        reader.readAsText(file); // Lire le contenu du fichier en tant que texte
     }
 };
+
   const renderItems = (parentId) => {
     const items = structure.filter(item => item.parentId === parentId);
     return items.map(item => (
@@ -175,22 +189,22 @@ const FileTree = () => {
           {item.type === 'folder' && (
             <>
               <button onClick={() => addFolder(item.id)} className="icon-button">
-                <FaPlus /> Ajouter dossier
+                <FaPlus />
               </button>
               <button onClick={() => addFile(item.id)} className="icon-button">
-                <FaPlus /> Ajouter fichier
+                <FaFile />
               </button>
-              {/* Bouton d'importation de fichier */}
               <input
-                    type="file"
-                    accept=".md"
-                    onChange={importFile}
-                    style={{ display: 'none' }}
-                    id="import-file"
-                />
-                <label htmlFor="import-file" className="import-button">
-                <FaFileExport  />importer un fichier
-                </label>
+                type="file"
+                className="icon-button"
+                accept=".md"
+                onChange={(event) => importFile(event, item.id)} 
+                style={{ display: 'none' }}
+                id={`import-file-${item.id}`} // Utilisez un ID unique pour chaque input
+            />
+            <label htmlFor={`import-file-${item.id}`} className="import-button">
+            <FaFileImport />
+             </label>
                 
             </>
           )}
@@ -210,21 +224,22 @@ const FileTree = () => {
         <h3>Arborescence des fichiers</h3>
         {renderItems(null)}
         <button onClick={() => addFolder(null)} className="icon-button">
-          <FaPlus /> Ajouter un dossier
+          <FaPlus /> 
         </button>
         <button onClick={() => addFile(null)} className="icon-button">
-          <FaPlus /> Ajouter un fichier
+          <FaFile /> 
         </button>
-        <input
-                    type="file"
-                    accept=".md"
-                    onChange={importFile}
-                    style={{ display: 'none' }}
-                    id="import-file"
-                />
-                <label htmlFor="import-file" className="import-button">
-                <FaFileExport  />Importer un fichier
-                </label>
+            <input
+        type="file"
+        className="icon-button"
+        accept=".md"
+        onChange={(event) => importFile(event, null)} 
+        style={{ display: 'none' }}
+        id={`import-file`} // Utilisez un ID unique pour chaque input
+    />
+    <label htmlFor={`import-file`} className="import-button">
+        <FaFileImport />
+    </label>
       </div>
       <div className="editor-preview-container">
         {selectedFile ? (

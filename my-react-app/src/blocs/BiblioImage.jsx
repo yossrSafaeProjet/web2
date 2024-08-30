@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './Biblio.module.css';
 import ExportEtImportBlocs from './ExportEtImportBlocs';
@@ -15,6 +15,7 @@ const BiblioImg = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentImage, setCurrentImage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();  // Ajout de useLocation pour gérer 'location'
 
   useEffect(() => {
     const savedImages = localStorage.getItem('images');
@@ -40,6 +41,10 @@ const BiblioImg = () => {
     setShowConfirmModal(false);
   };
 
+  const insererImage = (img) => {
+    navigate('/', { state: { imageToAdd: img.content } });
+  };
+
   const handleFileChange = (event) => {
     const files = event.target.files;
     const newImages = [];
@@ -52,7 +57,7 @@ const BiblioImg = () => {
         newImages.push({
           id: Date.now() + Math.random(),
           name: file.name,
-          content: content
+          content: content // Base64 URL of the image
         });
         if (newImages.length === files.length) {
           setImages(prevImages => [...prevImages, ...newImages]);
@@ -79,32 +84,19 @@ const BiblioImg = () => {
     setImageName('');
   };
 
+  const handleInjectImage = (image) => {
+    if (location.state && location.state.returnToEditor) {
+      navigate('/', { state: { imageToInsert: `![${image.name}](${image.content})` } });
+    } else {
+      navigate('/');
+    }
+  };
+  
+  
   return (
     <div className="container mt-4">
       <h2 className={styles.title}>Bibliothèque des Images</h2>
-    {/*   <Button onClick={() => setShowImportModal(true)} variant="primary" className="m-2">
-        Parcourir
-      </Button>
-      <Modal show={showImportModal} onHide={() => setShowImportModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Parcourir</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <input
-            type="file"
-            accept="image/*"
-            className="form-control"
-            multiple
-            onChange={handleFileChange}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowImportModal(false)}>
-            Annuler
-          </Button>
-        </Modal.Footer>
-      </Modal>
- */}
+      
       <ExportEtImportBlocs images={images} setImages={setImages} />
 
       <div className={styles.cardContainer}>
@@ -114,18 +106,18 @@ const BiblioImg = () => {
               <Card.Header className={styles.cardTitle}>
                 <InputGroup>
                   <InputGroup.Text>
-                     <div className={styles.cardFooter}>
-                    <Button
-                      variant="info"
-                      onClick={() => {
-                        setCurrentImage(img);
-                        setImageName(img.name);
-                        setShowModal(true);
-                      }}
-                      className="me-2"
-                    >
-                      <FaEdit />
-                    </Button>
+                    <div className={styles.cardFooter}>
+                      <Button
+                        variant="info"
+                        onClick={() => {
+                          setCurrentImage(img);
+                          setImageName(img.name);
+                          setShowModal(true);
+                        }}
+                        className="me-2"
+                      >
+                        <FaEdit />
+                      </Button>
                     </div>
                   </InputGroup.Text>
                   {img.name}
@@ -143,6 +135,7 @@ const BiblioImg = () => {
                 <Button variant="danger" onClick={() => deleteImage(img.id)}>
                   <FaTrash />
                 </Button>
+                <button onClick={() => handleInjectImage(img)}>Injecter</button>
               </div>
             </div>
           </Card>

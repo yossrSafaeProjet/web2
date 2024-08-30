@@ -1,23 +1,39 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../App.css'; 
-// Import the CSS file , onAddImage, onAddCustomBlock
-const MarkdownEditor = ({ content,fileName, onContentChange, onSave }) => {
-    const navigate = useNavigate(); // Initialize useNavigate
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import '../App.css';
+
+const MarkdownEditor = ({ content, fileName, onContentChange, onSave }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const imageToInsert = location.state?.imageToInsert;
+
+  useEffect(() => {
+    if (imageToInsert) {
+      const cleanImageSyntax = `(${imageToInsert.trim()})\n\n`;
+      onContentChange(content.trim() + cleanImageSyntax);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [imageToInsert, content, onContentChange, navigate, location.pathname]);
+
+  const handleAddImage = () => {
+    navigate('/img', { state: { returnToEditor: true } });
+  };
 
   const handleVisualize = () => {
-    // Navigate to the preview page and pass the content as state
     navigate('/preview', { state: { content } });
   };
+
   const handleExport = () => {
-    const blob = new Blob([content], { type: 'text/markdown' });  // Créer un fichier blob du contenu en Markdown
-    const url = URL.createObjectURL(blob);  // Créer une URL temporaire pour le blob
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = {fileName};  // Nom par défaut du fichier
-    a.click();  // Déclencher le téléchargement
-    URL.revokeObjectURL(url);  // Nettoyer l'URL temporaire après le téléchargement
-};
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="markdown-editor-container">
       <textarea
@@ -30,18 +46,14 @@ const MarkdownEditor = ({ content,fileName, onContentChange, onSave }) => {
         <button className="save-button" onClick={onSave}>
           Sauvegarder
         </button>
-        <button className="add-image-button" onClick={""}>
+        <button className="add-image-button" onClick={handleAddImage}>
           Ajouter Image
-        </button>
-        <button className="add-block-button" onClick={""}>
-          Ajouter Bloc Personnalisé
         </button>
         <button className="visualize-button" onClick={handleVisualize}>
           Visualiser
         </button>
-        {/* Bouton d'exportation du fichier */}
         <button className="export-button" onClick={handleExport}>
-                    Exporter
+          Exporter
         </button>
       </div>
     </div>

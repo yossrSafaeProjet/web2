@@ -14,6 +14,7 @@ const FileName = styled.span`
   margin-right: 10px;
   cursor: pointer;
   flex-grow: 1;
+  color: #ffffff; /* Texte en blanc */
 `;
 
 const IconButton = styled.div`

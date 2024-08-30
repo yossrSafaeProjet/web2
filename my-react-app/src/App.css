@@ -4,8 +4,8 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #1e1e1e; /* VS Code dark background */
-  color: #d4d4d4; /* Light text color */
+  background-color: #e8d3d3; /* VS Code dark background */
+  color: #f4f0f0 !important; /* Light text color */
 }
 
 h3 {
@@ -14,95 +14,166 @@ h3 {
 
 .app-container {
   display: flex;
+  height: 100vh; /* Occupy full viewport height */
+}
+
+.file-tree {
+  background-color: #252526; /* Sidebar background */
+  padding: 10px;
+  width: 400px; /* Fixed width similar to VS Code sidebar */
+  overflow-y: auto; /* Scroll if content overflows */
 }
 
 .file-tree-item {
   margin-bottom: 5px;
+  padding: 0px 0px;
+  border-radius: 3px;
 }
 
 .file-tree-item-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.file-tree-item:hover {
+  background-color: #333333; /* Highlight color on hover */
+}
+
+.folder span, .file span {
+  flex-grow: 1; /* Take up remaining space */
+  margin-left: 10px;
+  color: #ffffff; /* Texte en blanc */
 }
 
 .icon-button {
   border: none;
   background: transparent;
   cursor: pointer;
-  margin-left: 5px;
+  color: #d4d4d4; /* Default icon color */
 }
 
 .icon-button:hover {
-  color: #007bff;
+  color: #569cd6; /* VS Code icon hover color */
 }
 
 .editor-preview-container {
   flex: 1;
-  padding: 10px;
-}
-
-.folder, .file {
-  padding: 5px;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
-.folder:hover, .file:hover {
-  border-color: #ddd;
-}
-
-.icon-button {
-  margin-top: 10px;
-}
-
-.editor-preview-container {
-  flex: 1; /* Take up remaining space */
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  width: 70%;
+  padding: 20px;
+  background-color: #1e1e1e;
+  overflow-y: auto; /* Scrollable content */
 }
 
 .markdown-editor {
-  width: 100%; /* Full width of its container */
-  height: 500px; /* Set a specific height */
+  width: 100%;
+  height: 500px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #3c3c3c; /* Border similar to VS Code */
   border-radius: 4px;
+  background-color: #1e1e1e; /* Match editor background */
+  color: #d4d4d4; /* Match editor text color */
   font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
   line-height: 1.5;
   box-sizing: border-box;
-  resize: both; /* Allow users to resize both width and height */
+  resize: both;
+  overflow: auto; /* Allow content to scroll */
 }
 
 .save-button {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #007acc; /* VS Code blue button color */
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
   cursor: pointer;
 }
 
 .save-button:hover {
-  background-color: #0056b3;
+  background-color: #005a9e; /* Darker blue on hover */
 }
 
 .preview-container {
   padding: 20px;
+  background-color: #252526; /* Match background to sidebar */
+  border-radius: 4px;
+  margin-top: 20px;
 }
 
 .markdown-preview {
-  border: 1px solid #ccc;
+  border: 1px solid #3c3c3c;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 4px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
-.icon-button {
-  margin-top: 10px;
+.markdown-preview h1, .markdown-preview h2, .markdown-preview h3 {
+  color: #569cd6; /* Headings in light blue */
+}
+
+.markdown-preview p {
+  margin-bottom: 1em;
+}
+
+.markdown-preview code {
+  background-color: pink;
+  color: #dcdcaa;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.markdown-preview pre {
+  background-color: #1e1e1e;
+  color: #dcdcaa;
   padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+/* Icon buttons at the bottom */
+.icon-button {
+  margin-top: 0px;
+  padding: 0px;
   cursor: pointer;
 }
 
+.import-button {
+  color: #d4d4d4;
+  cursor: pointer;
+}
+
+.import-button:hover {
+  color: #569cd6;
+}
+
+/* Scrollbar styling to match VS Code */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #252526;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c3c3c;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+/* App.css */
+.image-preview {
+  padding: 5px;           /* Espacement intérieur */
+  border-radius: 8px;     /* Coins arrondis */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Ombre portée */
+  width: 40%;
+  height: 60%;
+}
