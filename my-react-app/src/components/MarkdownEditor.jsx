@@ -2,13 +2,22 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css'; 
 // Import the CSS file , onAddImage, onAddCustomBlock
-const MarkdownEditor = ({ content, onContentChange, onSave }) => {
+const MarkdownEditor = ({ content,fileName, onContentChange, onSave }) => {
     const navigate = useNavigate(); // Initialize useNavigate
 
   const handleVisualize = () => {
     // Navigate to the preview page and pass the content as state
     navigate('/preview', { state: { content } });
   };
+  const handleExport = () => {
+    const blob = new Blob([content], { type: 'text/markdown' });  // Créer un fichier blob du contenu en Markdown
+    const url = URL.createObjectURL(blob);  // Créer une URL temporaire pour le blob
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = {fileName};  // Nom par défaut du fichier
+    a.click();  // Déclencher le téléchargement
+    URL.revokeObjectURL(url);  // Nettoyer l'URL temporaire après le téléchargement
+};
   return (
     <div className="markdown-editor-container">
       <textarea
@@ -29,6 +38,10 @@ const MarkdownEditor = ({ content, onContentChange, onSave }) => {
         </button>
         <button className="visualize-button" onClick={handleVisualize}>
           Visualiser
+        </button>
+        {/* Bouton d'exportation du fichier */}
+        <button className="export-button" onClick={handleExport}>
+                    Exporter
         </button>
       </div>
     </div>

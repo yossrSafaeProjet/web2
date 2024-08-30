@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MarkdownEditor from './MarkdownEditor';
 import MarkdownPreview from './MarkdownPreview';
 import '../App.css';
-import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFileExport } from 'react-icons/fa';
 
 const FileTree = () => {
   const [structure, setStructure] = useState([]);
@@ -104,7 +104,6 @@ const FileTree = () => {
 
   const moveItem = () => {
     if (!itemToMove || !destinationFolder || itemToMove.id === destinationFolder.id) {
-      alert("Sélectionnez un élément valide et une destination valide.");
       return;
     }
 
@@ -142,6 +141,17 @@ const FileTree = () => {
     }
   };
 
+  const importFile = (event) => {
+    const file = event.target.files[0]; // Sélectionne le premier fichier
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const fileContent = e.target.result;
+            //onContentChange(fileContent);  Met à jour le contenu de l'éditeur avec le contenu du fichier
+        };
+        reader.readAsText(file); // Lire le fichier comme du texte
+    }
+};
   const renderItems = (parentId) => {
     const items = structure.filter(item => item.parentId === parentId);
     return items.map(item => (
@@ -170,6 +180,18 @@ const FileTree = () => {
               <button onClick={() => addFile(item.id)} className="icon-button">
                 <FaPlus /> Ajouter fichier
               </button>
+              {/* Bouton d'importation de fichier */}
+              <input
+                    type="file"
+                    accept=".md"
+                    onChange={importFile}
+                    style={{ display: 'none' }}
+                    id="import-file"
+                />
+                <label htmlFor="import-file" className="import-button">
+                <FaFileExport  />importer un fichier
+                </label>
+                
             </>
           )}
         </div>
@@ -193,12 +215,23 @@ const FileTree = () => {
         <button onClick={() => addFile(null)} className="icon-button">
           <FaPlus /> Ajouter un fichier
         </button>
+        <input
+                    type="file"
+                    accept=".md"
+                    onChange={importFile}
+                    style={{ display: 'none' }}
+                    id="import-file"
+                />
+                <label htmlFor="import-file" className="import-button">
+                <FaFileExport  />Importer un fichier
+                </label>
       </div>
       <div className="editor-preview-container">
         {selectedFile ? (
           <>
             <MarkdownEditor
               content={editorContent}
+              fileName={selectedFile.name}  
               onContentChange={handleContentChange}
               onSave={saveFile}  // Pass the saveFile function as a prop
             />

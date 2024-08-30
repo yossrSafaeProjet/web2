@@ -9,7 +9,8 @@ const MarkdownPreview = () => {
 
   const converter = new Showdown.Converter();
   const html = content ? converter.makeHtml(content) : '';
-
+  console.log('Markdown content:', content);
+  console.log('Converted HTML:', html);
   return (
     <div
       className="markdown-preview"
