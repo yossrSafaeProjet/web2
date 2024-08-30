@@ -14,45 +14,13 @@ h3 {
 
 .app-container {
   display: flex;
+  flex-direction: row;
+  height: 100vh; /* Full viewport height */
 }
 
-.file-tree-item {
-  margin-bottom: 5px;
-}
-
-.file-tree-item-content {
-  display: flex;
-  align-items: center;
-}
-
-.icon-button {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-.icon-button:hover {
-  color: #007bff;
-}
-
-.editor-preview-container {
-  flex: 1;
-  padding: 10px;
-}
-
-.folder, .file {
-  padding: 5px;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
-.folder:hover, .file:hover {
-  border-color: #ddd;
-}
-
-.icon-button {
-  margin-top: 10px;
+.file-tree {
+  width: 300px; /* Fixed width for the file tree */
+  overflow-y: auto;
 }
 
 .editor-preview-container {
@@ -90,19 +58,15 @@ h3 {
   background-color: #0056b3;
 }
 
-.preview-container {
-  padding: 20px;
-}
-
 .markdown-preview {
-  border: 1px solid #ccc;
-  padding: 20px;
-  background-color: #f9f9f9;
-}
-
-.icon-button {
-  margin-top: 10px;
+  width: 100%;
   padding: 10px;
-  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  line-height: 1.6;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  overflow-y: auto;
 }
-
