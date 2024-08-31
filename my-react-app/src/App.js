@@ -17,10 +17,10 @@ function App() {
       <Routes>
         <Route path="/" element={<FileTree />} />
         <Route path="/preview" element={<MarkdownPreview />} />
-      <Route path="/biblio" element={<BibliothequeBloc />} />
-      <Route path="/img" element={<BiblioImg />} />
-      <Route path="/ajouter" element={<BlocPersonlise />} />
-      <Route path="/r" element={<RaccourciClavier blocks={[1,"aa","aa"]}/>} />
+      <Route path="/biblioBloc" element={<BibliothequeBloc />} />
+      <Route path="/biblioImage" element={<BiblioImg />} />
+      <Route path="/ajouterBloc" element={<BlocPersonlise />} />
+      <Route path="/raccourci" element={<RaccourciClavier blocks={[1,"aa","aa"]}/>} />
     </Routes>
   </Router>
   );

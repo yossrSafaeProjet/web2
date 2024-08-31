@@ -1,11 +1,10 @@
 /* App.css */
 
-/* General Settings */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #1e1e1e; /* VS Code dark background */
-  color: #d4d4d4; /* Light text color */
+  background-color: #1e1e1e; 
+  color: #d4d4d4; 
 }
 
 h3 {
@@ -56,7 +55,7 @@ h3 {
 }
 
 .editor-preview-container {
-  flex: 1; /* Take up remaining space */
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -64,8 +63,8 @@ h3 {
 }
 
 .markdown-editor {
-  width: 100%; /* Full width of its container */
-  height: 500px; /* Set a specific height */
+  width: 100%; 
+  height: 500px; 
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -73,7 +72,7 @@ h3 {
   font-size: 14px;
   line-height: 1.5;
   box-sizing: border-box;
-  resize: both; /* Allow users to resize both width and height */
+  resize: both; 
 }
 
 .save-button {

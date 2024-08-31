@@ -2,7 +2,9 @@ import React, { useState} from 'react';
 import { Button, InputGroup, FormControl, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import modalStyle from '../css/Modal.module.css';
+import {FaArrowLeft} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 const RaccourciClavier = () => {
   const { state } = useLocation();
   const [shortcuts, setShortcuts] = useState(state?.selectedBlocks || []);
@@ -12,7 +14,7 @@ const RaccourciClavier = () => {
   const [showModal, setShowModal] = useState(false);
 
 
-
+  const navigate = useNavigate();
   const handleSaveShortcut = () => {
     if (!shortcutKey.trim() || !selectedBlock) return;
   
@@ -30,10 +32,12 @@ const RaccourciClavier = () => {
     setShortcutKey('');
     setShowModal(false);
   };
-
+  const retourner=()=>{
+    navigate('/biblioBloc'); 
+  }
   return (
     <div className="container mt-4">
-      <h2>Ajouter un Raccourci Clavier</h2>
+      <h2 className={modalStyle.titleModal}>Ajouter un Raccourci Clavier</h2>
       <ListGroup>
         {shortcuts.map((block) => (
           <ListGroupItem key={block.id}>
@@ -52,6 +56,8 @@ const RaccourciClavier = () => {
           </ListGroupItem>
         ))}
       </ListGroup>
+      
+      <Button variant="success" onClick={retourner}><FaArrowLeft/>Retour</Button>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -81,4 +87,4 @@ const RaccourciClavier = () => {
 };
 
 export default RaccourciClavier;
-/* Ici j'ai utilisé chat gpt  */
+/* Ici j'ai utilisé chat gpt mais j'ai changé selon la logique que je traite   */

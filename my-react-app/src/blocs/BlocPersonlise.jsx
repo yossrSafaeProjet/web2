@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import {FaArrowLeft} from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './BlocPersonalise.module.css';
+import styles from '../css/BlocPersonalise.module.css';
+import modalStyle from '../css/Modal.module.css';
 import { useNavigate } from 'react-router-dom';
 const BlocPersonlise = () => {
   const [content, setContent] = useState('');
@@ -36,7 +37,7 @@ const BlocPersonlise = () => {
   }
 }
   const retourner=()=>{
-    navigate('/'); 
+    navigate('/biblioBloc'); 
   }
   
   return (
@@ -55,7 +56,7 @@ const BlocPersonlise = () => {
       <Button onClick={() => setShowModal(true)} variant="primary">Sauvegarder le Bloc</Button>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title className={styles.titleModal}>Nommer le Bloc</Modal.Title>
+          <Modal.Title className={modalStyle.titleModal}>Nommer le Bloc</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup>

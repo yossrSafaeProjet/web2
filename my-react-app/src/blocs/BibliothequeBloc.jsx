@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Card, Modal, InputGroup, FormControl, FormCheck, ListGroupItem, ListGroup } from 'react-bootstrap';
 import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './Biblio.module.css';
+import styles from '../css/Biblio.module.css';
 import ExportEtImportBlocs from './ExportEtImportBlocs';
+import modalStyle from '../css/Modal.module.css';
+import ContextBloc from '../Contexte/ContexteBloc';
 
 const BibliothequeBloc = () => {
   const [blocks, setBlocks] = useState([]);
@@ -13,11 +15,15 @@ const BibliothequeBloc = () => {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRaccourciModal, setShowRaccourciModal] = useState(false);
+  const [showFileModal, setShowFileModal] = useState(false);
   const [currentBlock, setCurrentBlock] = useState(null);
   const [blockName, setBlockName] = useState('');
   const [content, setContent] = useState('');
   const [blockToDelete, setBlockToDelete] = useState(null);
   const [blockRaccourci, setBlockRaccourci] = useState('');
+  const [file, setFile] = useState([]);
+  const [selectedFile, setSelectedFile] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,13 +31,23 @@ const BibliothequeBloc = () => {
     if (savedBlocks) {
       setBlocks(JSON.parse(savedBlocks));
     }
+    const savedFiles = localStorage.getItem('fileStructure');
+    if (savedFiles) {
+      setFile(JSON.parse(savedFiles));
+    }
   }, []);
+  
   useEffect(() => {
+    const selectedBlocksList = selectedBlocks.map(id => blocks.find(block => block.id === id));
+    
     const keyUp = (e) => {
       const keyPressed = `${e.ctrlKey ? 'ctrl+' : ''}${e.key}`;
-      if(selectedBlocks.shortcut === keyPressed){
-        e.preventDefault(); 
-        insertBlockIntoFile(selectedBlocks[0]);
+      const shortcuts = selectedBlocksList.map(block => block.shortcut || '');
+      
+      if (shortcuts.includes(keyPressed)) {
+        e.preventDefault();
+        console.log("cssssc",selectedFile)
+        insertBlockIntoFile(selectedBlocksList.find(block => block.shortcut === keyPressed));
       }
     };
 
@@ -40,25 +56,41 @@ const BibliothequeBloc = () => {
     return () => {
       document.removeEventListener('keyup', keyUp);
     };
-  }, [selectedBlocks]);
+  }, [selectedBlocks, blocks,selectedFile]);
 
   const insertBlockIntoFile = (block) => {
-    const fichiers = JSON.parse(localStorage.getItem('fichiersMarkdown')) || [];
-    const fichierCible = fichiers[0];
+    const fichiers = JSON.parse(localStorage.getItem('fileStructure')) || [];
+    console.log("cc",selectedFile)
+    const fichiersCibles = fichiers.filter(fichier =>selectedFile.includes(fichier.id));
+    
+    console.log(fichiersCibles);
+    
+    if (fichiersCibles.length > 0) {
+      fichiersCibles.forEach(fichier => {
+        fichier.content += `\n${block.content}\n`;
+      });
   
-    if (fichierCible) {
-      fichierCible.content += `\n${block.content}\n`;
-
-      fichiers[0] = fichierCible;
-      localStorage.setItem('fichiersMarkdown', JSON.stringify(fichiers));
-      alert(`Bloc "${block.name}" inséré avec succès !`);
+      localStorage.setItem('fileStructure', JSON.stringify(fichiers));
+      alert(`Bloc "${block.name}" inséré avec succès dans les fichiers sélectionnés !`);
     } else {
       alert("Aucun fichier cible trouvé pour l'insertion.");
     }
   };
+
+  const selectFile = (file) => {
+   console.log("ff",file)
+    setSelectedFile((prev) =>
+    { const a = prev.includes(file.id) ? prev.filter((id) => id !== file.id) : [...prev, file.id]
+      console.log(a);
+      return a; 
+  });
+  }; 
+
+
   const sauvegarderBlock = () => {
-    while(!blockName.trim() && !content.trim()) 
-      return alert("Un nom et un contenu est obligatoire pour enregistrer un bloc !");
+    if (!blockName.trim() || !content.trim()) {
+      return alert("Un nom et un contenu sont obligatoires pour enregistrer un bloc !");
+    }
 
     const newBlock = { id: currentBlock ? currentBlock.id : Date.now(), name: blockName, content };
     const updatedBlocks = currentBlock
@@ -66,17 +98,14 @@ const BibliothequeBloc = () => {
       : [...blocks, newBlock];
 
     setBlocks(updatedBlocks);
-    if(blocks){
     localStorage.setItem('blocks', JSON.stringify(updatedBlocks));
-    alert("Bloc modifié avec succés");
+    alert("Bloc sauvegardé avec succès");
     setContent('');
     setBlockName('');
     setCurrentBlock(null);
     setShowModal(false);
-  }else{
-    alert("Un problème est survenu lors de la modification du bloc")
-  }
   };
+
   const editBlock = (block) => {
     setCurrentBlock(block);
     setBlockName(block.name);
@@ -107,16 +136,14 @@ const BibliothequeBloc = () => {
     );
   };
 
+  const choisirFile = () => {
+    setShowFileModal(true);
+  };
+
   const ajoutRaccourci = () => {
     const selectedBlocksList = selectedBlocks.map(id => blocks.find(block => block.id === id));
-    const stateData = {
-      allBlocks: blocks, 
-      selectedBlocks: selectedBlocksList
-    };
-    console.log(selectedBlocksList)
-    navigate('/r', { state: stateData });
+    navigate('/raccourci', { state: { allBlocks: blocks, selectedBlocks: selectedBlocksList } });
   };
-  
 
   const voirRaccourci = (block) => {
     setBlockRaccourci(block.shortcut || 'Aucun raccourci défini');
@@ -126,34 +153,35 @@ const BibliothequeBloc = () => {
   return (
     <div className="container mt-4">
       <h2 className={styles.title}>Bibliothèque des Blocs Personnalisés</h2>
-      <Button onClick={() => navigate('/ajouter')} variant="success" className="mb-3">
+      <Button onClick={() => navigate('/ajouterBloc')} variant="success" className="mb-3 me-2">
         <FaPlus /> Ajouter un Bloc
       </Button>
-      <div></div>
+    
       <Button
         onClick={ajoutRaccourci}
         variant="success"
         className="mb-3"
-        /* disabled={selectedBlocks.size === 0} */
+        disabled={selectedBlocks.length === 0}
       >
         Ajouter un Raccourci
       </Button>
-      <ExportEtImportBlocs blocks={blocks} setBlocks={setBlocks}/>
-
+      <ContextBloc.Provider value={{blocks,setBlocks}}>
+      <ExportEtImportBlocs />
+</ContextBloc.Provider>
       <div className={styles.cardContainer}>
         {blocks.map((block) => (
           <Card key={block.id} className={`${styles.card} mb-3`}>
             <div className={styles.cardBody}>
               <Card.Header className={styles.cardTitle}>
                 <InputGroup>
-                  <InputGroup.Text >
+                  <InputGroup.Text>
                     <input
                       type="checkbox"
-                      checked={(selectedBlocks.id)}
+                      checked={selectedBlocks.includes(block.id)}
                       onChange={() => selectBlock(block.id)}
                     />
-                  </InputGroup.Text >
-                 {block.name}
+                  </InputGroup.Text>
+                  {block.name}
                 </InputGroup>
               </Card.Header>
               <Card.Body>
@@ -170,9 +198,12 @@ const BibliothequeBloc = () => {
                 <Button
                   variant="secondary"
                   onClick={() => voirRaccourci(block)}
-                  className="ms-2"
+                  className="ms-2 "
                 >
                   <FaEye />
+                </Button>
+                <Button variant="primary" onClick={choisirFile} className='ms-2'>
+                  Choisir Fichier
                 </Button>
               </div>
             </div>
@@ -180,9 +211,10 @@ const BibliothequeBloc = () => {
         ))}
       </div>
 
+    
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{currentBlock ? 'Éditer le Bloc' : 'Ajouter un Bloc'}</Modal.Title>
+          <Modal.Title className={modalStyle.titleModal}>{currentBlock ? 'Éditer le Bloc' : 'Ajouter un Bloc'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">
@@ -212,10 +244,10 @@ const BibliothequeBloc = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      
+
       <Modal show={showConfirmModal} onHide={cancelDelete}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmation de Suppression</Modal.Title>
+          <Modal.Title className={modalStyle.titleModal}>Confirmation de Suppression</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           Êtes-vous sûr de vouloir supprimer ce bloc ?
@@ -230,6 +262,7 @@ const BibliothequeBloc = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Modal pour voir le raccourci du bloc */}
       <Modal show={showRaccourciModal} onHide={() => setShowRaccourciModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Raccourci du Bloc</Modal.Title>
@@ -240,6 +273,34 @@ const BibliothequeBloc = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowRaccourciModal(false)}>
             Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Choisir un fichier pour insérer le bloc</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {file.filter(f => f.name.includes('.md')).map((f) => (
+              <ListGroupItem key={f.id}>
+                <FormCheck
+                  type="checkbox"
+                  label={f.name}
+                  onChange={() => selectFile(f) }
+                
+                  checked={selectedFile.includes(f.id)}
+                
+                />
+              </ListGroupItem>
+              
+            ))}
+          </ListGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowFileModal(false)}>
+            Annuler
           </Button>
         </Modal.Footer>
       </Modal>

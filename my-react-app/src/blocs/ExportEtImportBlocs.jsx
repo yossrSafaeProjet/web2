@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, ListGroup, ListGroupItem, Modal, FormCheck } from 'react-bootstrap';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
+import modalStyle from '../css/Modal.module.css';
+import ContextBloc from '../Contexte/ContexteBloc';
+import contexteImage from '../Contexte/ContextImage';
 
-const ExportEtImportBlocs = ({ blocks, setBlocks, images, setImages }) => {
-  // Déterminer si on travaille avec des blocs ou des images
+const ExportEtImportBlocs = () => {
+  const contextBloc = useContext(ContextBloc);
+  const contextImage = useContext(contexteImage);
+
+  const blocks = contextBloc?.blocks;
+  const setBlocks = contextBloc?.setBlocks;
+  const images = contextImage?.images;
+  const setImages = contextImage?.setImages;
+
   const isBlocks = blocks && setBlocks;
   let data = isBlocks ? blocks : images;
   let setData = isBlocks ? setBlocks : setImages;
@@ -12,6 +22,7 @@ const ExportEtImportBlocs = ({ blocks, setBlocks, images, setImages }) => {
   const [showExportModal, setShowExportModal] = useState(false);
   const [file, setFile] = useState(null);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [isButton, setIsButton] = useState('');
 
   const selectItem = (itemId) => {
     setSelectedItems((prev) =>
@@ -20,46 +31,38 @@ const ExportEtImportBlocs = ({ blocks, setBlocks, images, setImages }) => {
   };
 
   const exportBloc = () => {
-      const blocksToExport = data.filter((block) => selectedItems.includes(block.id));
+    if (!data || !setData) return;
 
-      if (!blocksToExport.length) return alert('Sélectionnez au moins un bloc à exporter.');
+    const blocksToExport = data.filter((block) => selectedItems.includes(block.id));
 
-      const blob = new Blob([blocksToExport.map((block) => block.content).join('\n\n---\n\n')], { type: 'text/markdown' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      if (isBlocks){
-        link.download = `${blocksToExport[0].name}.part.mdlc`;
-      }else{
-        link.download = `${blocksToExport[0].name}.img.mdlc`;
-      }
-     
-      link.click();
-      window.URL.revokeObjectURL(link.href);
+    if (!blocksToExport.length) return alert('Sélectionnez au moins un bloc à exporter.');
 
-      setShowExportModal(false);
-    
+    const blob = new Blob([blocksToExport.map((block) => block.content).join('\n\n---\n\n')], { type: 'text/markdown' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = isBlocks ? `${blocksToExport[0].name}.part.mdlc` : `${blocksToExport[0].name}.img.mdlc`;
+
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+
+    setShowExportModal(false);
   };
 
   const exportAllBlocs = () => {
-      const combinedContent = data.map((block) => `${block.content}\n\n---\n`).join('');
-      
-      if (!combinedContent.length) return alert('Aucun bloc à exporter.');
+    if (!data || !setData) return;
 
-      const blob = new Blob([combinedContent], { type: 'text/markdown' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      if(isBlocks){
-        link.download = `allBlocks.parts.mdlc`;
+    const combinedContent = data.map((block) => `${block.content}\n\n---\n`).join('');
+    if (!combinedContent.length) return alert('Aucun bloc à exporter.');
 
-      }else{
-        link.download = `allBlocks.imgs.mdlc`;
-      }
-      link.click();
-      window.URL.revokeObjectURL(link.href);
+    const blob = new Blob([combinedContent], { type: 'text/markdown' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = isBlocks ? `allBlocks.parts.mdlc` : `allBlocks.imgs.mdlc`;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
 
-      setShowExportModal(false);
-    };
-
+    setShowExportModal(false);
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -67,10 +70,15 @@ const ExportEtImportBlocs = ({ blocks, setBlocks, images, setImages }) => {
 
   const importerBloc = () => {
     if (!file) return alert('Veuillez sélectionner un fichier à importer.');
+    if (!setData) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const content = e.target.result;
+      let content = e.target.result;
+      if(content.startsWith('data:application/octet-stream')){
+        content = content.replace('data:application/octet-stream', 'data:image/png');
+      }
+
       try {
         const importedItem = {
           content: content,
@@ -88,20 +96,11 @@ const ExportEtImportBlocs = ({ blocks, setBlocks, images, setImages }) => {
       } catch (error) {
         alert('Erreur lors de l\'importation du fichier.');
       }
-    
-    
     };
-if(!isBlocks){
-  reader.readAsDataURL(file);
-}else{
-  reader.readAsText(file);
-}
     
-
-
+    isBlocks ? reader.readAsText(file) : reader.readAsDataURL(file);
     setFile(null);
     setShowImportModal(false);
-    
   };
 
   return (
@@ -109,16 +108,25 @@ if(!isBlocks){
       <Button onClick={() => setShowExportModal(true)} variant="primary" className="m-2">
         <FaFileExport /> Exporter
       </Button>
-      <Button onClick={() => setShowImportModal(true)} variant="primary" className="m-2">
-        <FaFileImport /> Importer
-      </Button>
-      <Button onClick={() => setShowImportModal(true)} variant="primary" className="m-2">
-        Parcourir
-      </Button>
-      {/* Modal d'exportation */}
+
+      {isBlocks ? (
+        <Button onClick={() => setShowImportModal(true)} variant="primary" className="m-2">
+          <FaFileImport /> Importer
+        </Button>
+      ) : (
+        <>
+          <Button onClick={() => { setShowImportModal(true); setIsButton('Importer'); }} variant="primary" className="m-2">
+            <FaFileImport /> Importer
+          </Button>
+          <Button onClick={() => { setShowImportModal(true); setIsButton('Parcourir'); }} variant="primary" className="m-2">
+            Parcourir
+          </Button>
+        </>
+      )}
+
       <Modal show={showExportModal} onHide={() => setShowExportModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Exporter des {isBlocks ? 'Blocs' : 'Images'}</Modal.Title>
+          <Modal.Title className={modalStyle.titleModal}>Exporter des {isBlocks ? 'Blocs' : 'Images'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
@@ -144,15 +152,20 @@ if(!isBlocks){
         </Modal.Footer>
       </Modal>
 
-      {/* Modal d'importation */}
       <Modal show={showImportModal} onHide={() => setShowImportModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Importer des {isBlocks ? 'Blocs' : 'Images'}</Modal.Title>
+          <Modal.Title className={modalStyle.titleModal}>Importer des {isBlocks ? 'Blocs' : 'Images'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
             type="file"
-            accept={isBlocks?".part.mdlc,.parts.mdlc":"image/*,img.mdlc,imgs.mdlc"}
+            accept={
+              isBlocks 
+                ? ".part.mdlc,.parts.mdlc"  
+                : isButton === "Importer"
+                ? ".img.mdlc,.imgs.mdlc"    
+                : "image/*"                 
+            }            
             onChange={handleFileChange}
             className="form-control"
             multiple
