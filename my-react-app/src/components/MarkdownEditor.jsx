@@ -17,7 +17,7 @@ const MarkdownEditor = ({ content, fileName, onContentChange, onSave }) => {
   }, [imageToInsert, content, onContentChange, navigate, location.pathname]);
 
   const handleAddImage = () => {
-    navigate('/img', { state: { returnToEditor: true } });
+    navigate('/biblioImage', { state: { returnToEditor: true } });
   };
 
   const handleVisualize = () => {

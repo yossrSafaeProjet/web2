@@ -2,7 +2,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import FileTree from './components/FileTree';
 import MarkdownPreview from './components/MarkdownPreview';
-import MarkdownEditor from './components/MarkdownEditor';
 
 
 import React from 'react';

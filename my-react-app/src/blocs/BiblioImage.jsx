@@ -108,6 +108,7 @@ const BiblioImg = () => {
               <Button variant="danger" onClick={() => deleteImage(img.id)}>
                 <FaTrash />
               </Button>
+              <button onClick={() => handleInjectImage(img)}>Injecter</button>
             </Card.Footer>
           </Card>
         ))}

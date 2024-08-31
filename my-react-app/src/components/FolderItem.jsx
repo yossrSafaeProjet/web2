@@ -1,6 +1,6 @@
 import React from 'react';
 import FileItem from './FileItem';
-import { FaFolderOpen, FaPlus, FaFile, FaEdit, FaTrash } from 'react-icons/fa'; // Assurez-vous que toutes les icônes sont importées
+import { FaFolderOpen, FaPlus, FaFile, FaEdit, FaTrash } from 'react-icons/fa'; 
 import styled from 'styled-components';
 
 const FolderContainer = styled.div`

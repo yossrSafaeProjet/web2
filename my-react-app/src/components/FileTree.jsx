@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import MarkdownEditor from './MarkdownEditor';
-//import MarkdownPreview from './MarkdownPreview';
 import '../App.css';
 import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFile, FaFileImport } from 'react-icons/fa';
 
@@ -148,21 +147,20 @@ const FileTree = () => {
         reader.onload = (e) => {
             const fileContent = e.target.result;
             console.log("parentId",parentId);
-            // Créer un nouvel objet fichier avec l'ID du dossier parent (parentId)
             const newFile = {
-                id: Date.now(),  // Génère un ID unique basé sur l'horodatage actuel
-                name: file.name, // Nom du fichier importé
-                type: 'file',    // Le type est défini sur 'file'
-                content: fileContent, // Contenu du fichier lu
-                parentId: parentId,  // Dossier parent où le fichier sera ajouté
+                id: Date.now(),  
+                name: file.name, 
+                type: 'file',    
+                content: fileContent, 
+                parentId: parentId,  
             };
 
-            // Mettre à jour la structure avec le nouveau fichier
+            
             const updatedStructure = [...structure, newFile];
-            saveToLocalStorage(updatedStructure); // Sauvegarde dans le stockage local
-            selectFile(newFile); // Sélectionner le fichier pour l'éditer après importation
+            saveToLocalStorage(updatedStructure); 
+            selectFile(newFile); 
         };
-        reader.readAsText(file); // Lire le contenu du fichier en tant que texte
+        reader.readAsText(file); 
     }
 };
 
@@ -200,7 +198,7 @@ const FileTree = () => {
                 accept=".md"
                 onChange={(event) => importFile(event, item.id)} 
                 style={{ display: 'none' }}
-                id={`import-file-${item.id}`} // Utilisez un ID unique pour chaque input
+                id={`import-file-${item.id}`} 
             />
             <label htmlFor={`import-file-${item.id}`} className="import-button">
             <FaFileImport />
@@ -235,7 +233,7 @@ const FileTree = () => {
         accept=".md"
         onChange={(event) => importFile(event, null)} 
         style={{ display: 'none' }}
-        id={`import-file`} // Utilisez un ID unique pour chaque input
+        id={`import-file`} 
     />
     <label htmlFor={`import-file`} className="import-button">
         <FaFileImport />
@@ -248,7 +246,7 @@ const FileTree = () => {
               content={editorContent}
               fileName={selectedFile.name}  
               onContentChange={handleContentChange}
-              onSave={saveFile}  // Pass the saveFile function as a prop
+              onSave={saveFile}  
             />
           </>
         ) : (

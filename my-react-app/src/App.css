@@ -1,10 +1,9 @@
-/* App.css */
 
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #1e1e1e; 
-  color: #d4d4d4; 
+  background-color: #e8d3d3; 
+  color: #f4f0f0 !important; 
 }
 
 h3 {
@@ -13,14 +12,14 @@ h3 {
 
 .app-container {
   display: flex;
-  height: 100vh; /* Occupy full viewport height */
+  height: 100vh; 
 }
 
 .file-tree {
-  background-color: #252526; /* Sidebar background */
+  background-color: #252526; 
   padding: 10px;
-  width: 400px; /* Fixed width similar to VS Code sidebar */
-  overflow-y: auto; /* Scroll if content overflows */
+  width: 400px; 
+  overflow-y: auto; 
 }
 
 .file-tree-item {
@@ -36,43 +35,24 @@ h3 {
 }
 
 .file-tree-item:hover {
-  background-color: #333333; /* Highlight color on hover */
+  background-color: #333333; 
 }
 
 .folder span, .file span {
-  flex-grow: 1; /* Take up remaining space */
+  flex-grow: 1; 
   margin-left: 10px;
-  color: #ffffff; /* Texte en blanc */
+  color: #ffffff; 
 }
 
 .icon-button {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: #d4d4d4; /* Default icon color */
+  color: #d4d4d4; 
 }
 
 .icon-button:hover {
-  color: #569cd6; /* VS Code icon hover color */
-}
-
-.editor-preview-container {
-  flex: 1;
-  padding: 10px;
-}
-
-.folder, .file {
-  padding: 5px;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
-.folder:hover, .file:hover {
-  border-color: #ddd;
-}
-
-.icon-button {
-  margin-top: 10px;
+  color: #569cd6; 
 }
 
 .editor-preview-container {
@@ -85,24 +65,25 @@ h3 {
 }
 
 .markdown-editor {
-  width: 100%; 
-  height: 500px; 
+  width: 100%;
+  height: 500px;
   padding: 10px;
-  border: 1px solid #3c3c3c; /* Border similar to VS Code */
+  border: 1px solid #3c3c3c; 
   border-radius: 4px;
-  background-color: #1e1e1e; /* Match editor background */
-  color: #d4d4d4; /* Match editor text color */
+  background-color: #1e1e1e; 
+  color: #d4d4d4; 
   font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
   line-height: 1.5;
   box-sizing: border-box;
-  resize: both; 
+  resize: both;
+  overflow: auto; /* Allow content to scroll */
 }
 
 .save-button {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #007acc; /* VS Code blue button color */
+  background-color: #007acc;
   color: white;
   border: none;
   border-radius: 3px;
@@ -110,12 +91,12 @@ h3 {
 }
 
 .save-button:hover {
-  background-color: #005a9e; /* Darker blue on hover */
+  background-color: #005a9e; 
 }
 
 .preview-container {
   padding: 20px;
-  background-color: #252526; /* Match background to sidebar */
+  background-color: #252526; 
   border-radius: 4px;
   margin-top: 20px;
 }
@@ -131,7 +112,7 @@ h3 {
 }
 
 .markdown-preview h1, .markdown-preview h2, .markdown-preview h3 {
-  color: #569cd6; /* Headings in light blue */
+  color: #569cd6; 
 }
 
 .markdown-preview p {
@@ -153,7 +134,7 @@ h3 {
   overflow-x: auto;
 }
 
-/* Icon buttons at the bottom */
+
 .icon-button {
   margin-top: 0px;
   padding: 0px;
@@ -169,7 +150,7 @@ h3 {
   color: #569cd6;
 }
 
-/* Scrollbar styling to match VS Code */
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -186,11 +167,11 @@ h3 {
 ::-webkit-scrollbar-thumb:hover {
   background: #4e4e4e;
 }
-/* App.css */
+
 .image-preview {
-  padding: 5px;           /* Espacement intérieur */
-  border-radius: 8px;     /* Coins arrondis */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Ombre portée */
+  padding: 5px;         
+  border-radius: 8px;     
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
   width: 40%;
   height: 60%;
 }
