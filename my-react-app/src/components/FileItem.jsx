@@ -19,7 +19,6 @@ const FileName = styled.span`
 
 const IconButton = styled.div`
   color: #d4d4d4;
-  margin-left: 10px;
   cursor: pointer;
   transition: color 0.2s;
 

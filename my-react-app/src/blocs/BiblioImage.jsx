@@ -87,11 +87,12 @@ const BiblioImg = () => {
   const handleInjectImage = (image) => {
     if (location.state && location.state.returnToEditor) {
       navigate('/', { state: { imageToInsert: `![${image.name}](${image.content})` } });
+      
     } else {
       navigate('/');
     }
   };
-  
+    
   
   return (
     <div className="container mt-4">
