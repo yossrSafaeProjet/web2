@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import FileTree from './components/FileTree';
 import MarkdownPreview from './components/MarkdownPreview';
 
-// src/App.jsx
 import React from 'react';
 
 import BibliothequeBloc from './blocs/BibliothequeBloc';

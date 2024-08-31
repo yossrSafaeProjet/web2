@@ -33,11 +33,11 @@ const ExportEtImportBlocs = () => {
   const exportBloc = () => {
     if (!data || !setData) return;
 
-    const blocksToExport = data.filter((block) => selectedItems.includes(block.id));
+    const blocksToExport = data.filter((data) => selectedItems.includes(data.id));
 
-    if (!blocksToExport.length) return alert('Sélectionnez au moins un bloc à exporter.');
+    if (!blocksToExport.length) return alert(`Sélectionnez au moins ${isBlocks ? ' un bloc' : ' une image'} à exporter.`);
 
-    const blob = new Blob([blocksToExport.map((block) => block.content).join('\n\n---\n\n')], { type: 'text/markdown' });
+    const blob = new Blob([blocksToExport.map((data) => data.content).join('\n\n---\n\n')], { type: 'text/markdown' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
     link.download = isBlocks ? `${blocksToExport[0].name}.part.mdlc` : `${blocksToExport[0].name}.img.mdlc`;
@@ -52,12 +52,12 @@ const ExportEtImportBlocs = () => {
     if (!data || !setData) return;
 
     const combinedContent = data.map((block) => `${block.content}\n\n---\n`).join('');
-    if (!combinedContent.length) return alert('Aucun bloc à exporter.');
+    if (!combinedContent.length) return alert(`Aucun ${isBlocks ? 'bloc' : 'image'} à exporter.`);
 
     const blob = new Blob([combinedContent], { type: 'text/markdown' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = isBlocks ? `allBlocks.parts.mdlc` : `allBlocks.imgs.mdlc`;
+    link.download = isBlocks ? `allBlocks.parts.mdlc` : `allImages.imgs.mdlc`;
     link.click();
     window.URL.revokeObjectURL(link.href);
 
@@ -75,6 +75,7 @@ const ExportEtImportBlocs = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       let content = e.target.result;
+      console.log(e.target)
       if(content.startsWith('data:application/octet-stream')){
         content = content.replace('data:application/octet-stream', 'data:image/png');
       }
