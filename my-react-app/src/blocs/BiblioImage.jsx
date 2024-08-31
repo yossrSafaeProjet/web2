@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../css/Biblio.module.css';
 import ExportEtImportBlocs from './ExportEtImportBlocs';
@@ -16,6 +16,7 @@ const BiblioImg = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentImage, setCurrentImage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();  // Ajout de useLocation pour gérer 'location'
 
   useEffect(() => {
     const savedImages = localStorage.getItem('images');
@@ -57,6 +58,16 @@ const BiblioImg = () => {
     setImageName('');
   };
 
+  const handleInjectImage = (image) => {
+    if (location.state && location.state.returnToEditor) {
+      navigate('/', { state: { imageToInsert: `![${image.name}](${image.content})` } });
+      
+    } else {
+      navigate('/');
+    }
+  };
+    
+  
   return (
     <div className="container mt-4">
       <h2 className={styles.title}>Bibliothèque des Images</h2>

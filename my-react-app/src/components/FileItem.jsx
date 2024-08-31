@@ -14,11 +14,11 @@ const FileName = styled.span`
   margin-right: 10px;
   cursor: pointer;
   flex-grow: 1;
+  color: #ffffff; /* Texte en blanc */
 `;
 
 const IconButton = styled.div`
   color: #d4d4d4;
-  margin-left: 10px;
   cursor: pointer;
   transition: color 0.2s;
 
