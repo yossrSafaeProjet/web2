@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MarkdownEditor from './MarkdownEditor';
+import { useLocation } from 'react-router-dom';
 import '../App.css';
 import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFile, FaFileImport } from 'react-icons/fa';
 
@@ -9,9 +10,10 @@ const FileTree = () => {
   const [editorContent, setEditorContent] = useState('');
   const [itemToMove, setItemToMove] = useState(null);
   const [destinationFolder, setDestinationFolder] = useState(null);
-
+  const location = useLocation();
   useEffect(() => {
     const savedStructure = localStorage.getItem('fileStructure');
+
     if (savedStructure) {
       setStructure(JSON.parse(savedStructure));
     } else {
@@ -22,7 +24,23 @@ const FileTree = () => {
         { id: 4, name: 'Dossier 2', type: 'folder', parentId: null },
       ]);
     }
-  }, []);
+  
+    if (location.state?.selectedFileId) {
+      const selectedFile = structure.find(item => item.id === location.state.selectedFileId);
+      
+      if (selectedFile) {
+        setSelectedFile(selectedFile);
+        setEditorContent(selectedFile.content);
+      }
+    } else if (location.state?.selectedFile) {
+      const selectedFile = location.state.selectedFile;      
+      if (selectedFile) {
+        setSelectedFile(selectedFile);
+        setEditorContent(selectedFile.content);
+      }
+    }
+  }, [location.state, structure]);
+  
 
   const saveToLocalStorage = (newStructure) => {
     localStorage.setItem('fileStructure', JSON.stringify(newStructure));
@@ -247,6 +265,7 @@ const FileTree = () => {
               fileName={selectedFile.name}  
               onContentChange={handleContentChange}
               onSave={saveFile}  
+              selectedFile={selectedFile}
             />
           </>
         ) : (

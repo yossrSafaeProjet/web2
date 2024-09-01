@@ -61,7 +61,7 @@ const RaccourciClavier = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Définir Raccourci</Modal.Title>
+        <Modal.Title className={modalStyle.title}>Définir Raccourci</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">

@@ -59,11 +59,29 @@ const BiblioImg = () => {
   };
 
   const handleInjectImage = (image) => {
-    if (location.state && location.state.returnToEditor) {
-      navigate('/', { state: { imageToInsert: `![${image.name}](${image.content})` } });
-      
+    const updatedContent = `![${image.name}](${image.content})`;
+  
+    console.log('Injecting Image:', image);
+    console.log('Updated Content:', updatedContent);
+  
+    if (location.state?.returnToEditor) {
+      console.log('Navigating back to editor with image data');
+      navigate('/', {
+        state: {
+          imageToInsert: updatedContent,
+          selectedFileId: location.state.selectedFileId,
+        }
+      });
     } else {
-      navigate('/');
+      console.log('Navigating to main with updated file content');
+      navigate('/', {
+        state: {
+          selectedFile: {
+            ...location.state.selectedFile,
+            content: location.state.selectedFile?.content + updatedContent
+          },
+        },
+      });
     }
   };
     
@@ -108,7 +126,7 @@ const BiblioImg = () => {
               <Button variant="danger" onClick={() => deleteImage(img.id)}>
                 <FaTrash />
               </Button>
-              <button onClick={() => handleInjectImage(img)}>Injecter</button>
+              <Button variant="success" onClick={() => handleInjectImage(img)} className='m-2'>Injecter</Button>
             </Card.Footer>
           </Card>
         ))}
