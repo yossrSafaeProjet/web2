@@ -1,29 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import MarkdownEditor from './MarkdownEditor';
 //import MarkdownPreview from './MarkdownPreview';
 import '../App.css';
 import { FaFolder, FaFileAlt, FaPlus, FaEdit, FaTrashAlt,FaFile, FaFileImport } from 'react-icons/fa';
-
 const FileTree = () => {
-  const [structure, setStructure] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [editorContent, setEditorContent] = useState('');
-  const [itemToMove, setItemToMove] = useState(null);
-  const [destinationFolder, setDestinationFolder] = useState(null);
+    const [structure, setStructure] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [editorContent, setEditorContent] = useState('');
+    const [itemToMove, setItemToMove] = useState(null);
+    const [destinationFolder, setDestinationFolder] = useState(null);
+    const location = useLocation(); // Utilisez useLocation pour obtenir l'état passé via navigate
+  
+    useEffect(() => {
+        const savedStructure = localStorage.getItem('fileStructure');
+        console.log('Saved Structure from Local Storage:', savedStructure);
+      
+        if (savedStructure) {
+          setStructure(JSON.parse(savedStructure));
+        } else {
+          setStructure([
+            { id: 1, name: 'Dossier 1', type: 'folder', parentId: null },
+            { id: 2, name: 'Fichier1.md', type: 'file', content: '', parentId: 1 },
+            { id: 3, name: 'Fichier2.md', type: 'file', content: '', parentId: 1 },
+            { id: 4, name: 'Dossier 2', type: 'folder', parentId: null },
+          ]);
+        }
+      
+        if (location.state?.selectedFileId) {
+          const selectedFile = structure.find(item => item.id === location.state.selectedFileId);
+          console.log('Selected File from Location State:', selectedFile);
+          
+          if (selectedFile) {
+            setSelectedFile(selectedFile);
+            setEditorContent(selectedFile.content);
+          }
+        } else if (location.state?.selectedFile) {
+          const selectedFile = location.state.selectedFile;
+          console.log('Selected File from Location State:', selectedFile);
+          
+          if (selectedFile) {
+            setSelectedFile(selectedFile);
+            setEditorContent(selectedFile.content);
+          }
+        }
+      }, [location.state, structure]);
+      
+      
 
-  useEffect(() => {
-    const savedStructure = localStorage.getItem('fileStructure');
-    if (savedStructure) {
-      setStructure(JSON.parse(savedStructure));
-    } else {
-      setStructure([
-        { id: 1, name: 'Dossier 1', type: 'folder', parentId: null },
-        { id: 2, name: 'Fichier1.md', type: 'file', content: '', parentId: 1 },
-        { id: 3, name: 'Fichier2.md', type: 'file', content: '', parentId: 1 },
-        { id: 4, name: 'Dossier 2', type: 'folder', parentId: null },
-      ]);
-    }
-  }, []);
 
   const saveToLocalStorage = (newStructure) => {
     localStorage.setItem('fileStructure', JSON.stringify(newStructure));
@@ -249,6 +273,7 @@ const FileTree = () => {
               fileName={selectedFile.name}  
               onContentChange={handleContentChange}
               onSave={saveFile}  // Pass the saveFile function as a prop
+              selectedFile={selectedFile}
             />
           </>
         ) : (

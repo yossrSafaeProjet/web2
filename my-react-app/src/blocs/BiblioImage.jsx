@@ -14,6 +14,7 @@ const BiblioImg = () => {
   const [imageName, setImageName] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [currentImage, setCurrentImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();  // Ajout de useLocation pour gérer 'location'
 
@@ -85,14 +86,35 @@ const BiblioImg = () => {
   };
 
   const handleInjectImage = (image) => {
-    if (location.state && location.state.returnToEditor) {
-      navigate('/', { state: { imageToInsert: `![${image.name}](${image.content})` } });
-      
+    const updatedContent = `![${image.name}](${image.content})`;
+  
+    console.log('Injecting Image:', image);
+    console.log('Updated Content:', updatedContent);
+  
+    if (location.state?.returnToEditor) {
+      console.log('Navigating back to editor with image data');
+      navigate('/', {
+        state: {
+          imageToInsert: updatedContent,
+          selectedFileId: location.state.selectedFileId,
+        }
+      });
     } else {
-      navigate('/');
+      console.log('Navigating to main with updated file content');
+      navigate('/', {
+        state: {
+          selectedFile: {
+            ...location.state.selectedFile,
+            content: location.state.selectedFile?.content + updatedContent
+          },
+        },
+      });
     }
   };
-    
+  
+  
+  
+  
   
   return (
     <div className="container mt-4">
